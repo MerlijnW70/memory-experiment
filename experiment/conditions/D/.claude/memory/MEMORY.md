@@ -1,0 +1,7 @@
+- [Auth domein](auth.md) — token validatie, thread-local current_user, permissies, middleware
+- [Payments domein](payments.md) — betalingsverwerking, subscriptions, refunds, afhankelijk van auth context
+- [Users domein](users.md) — user CRUD, profielen, notificaties, delete cascadeert naar subscriptions
+- [API domein](api.md) — routes, serializers (cents→dollars), rate limiting via feature_flags
+- [Models domein](models.md) — datamodellen, bedragen in cents (int), strikte typevalidatie
+- [Utils domein](utils.md) — geldconversie, feature flags (bevat rate limit config), validatie, logging
+- [Architectuurbeslissingen](decisions.md) — kernbeslissingen en hun rationale

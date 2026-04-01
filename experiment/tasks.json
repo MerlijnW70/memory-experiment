@@ -1,0 +1,197 @@
+[
+  {
+    "id": "T01",
+    "category": "bug_fix",
+    "difficulty": "easy",
+    "tests_hidden_pattern": false,
+    "description": "Fix a bug in src/utils/validation.py: validate_email accepts emails without a dot in the domain (e.g., 'user@localhost'). Add validation that requires at least one dot after the @ sign.",
+    "expected_files": ["src/utils/validation.py"],
+    "expected_test_impact": "tests/test_utils.py"
+  },
+  {
+    "id": "T02",
+    "category": "bug_fix",
+    "difficulty": "medium",
+    "tests_hidden_pattern": true,
+    "description": "There's a bug: when a payment is processed for an amount like $19.99, the conversion to cents sometimes produces 1998 instead of 1999 due to floating-point precision. Fix the dollars_to_cents function in src/utils/money.py to handle this correctly.",
+    "expected_files": ["src/utils/money.py"],
+    "expected_test_impact": "tests/test_utils.py",
+    "hidden_pattern_tested": "cents_dollars_invariant"
+  },
+  {
+    "id": "T03",
+    "category": "feature",
+    "difficulty": "medium",
+    "tests_hidden_pattern": true,
+    "description": "Add a new API endpoint handler 'suspend_user' in src/api/routes.py that deactivates a user account. When a user is suspended, their active subscriptions should be paused (not cancelled).",
+    "expected_files": ["src/api/routes.py", "src/users/manager.py", "src/payments/subscriptions.py"],
+    "expected_test_impact": "tests/test_api.py",
+    "hidden_pattern_tested": "user_subscription_dependency"
+  },
+  {
+    "id": "T04",
+    "category": "feature",
+    "difficulty": "hard",
+    "tests_hidden_pattern": true,
+    "description": "Add a 'transfer_subscription' function to src/payments/subscriptions.py that transfers a subscription from one user to another. Make sure the function works correctly with the authentication system.",
+    "expected_files": ["src/payments/subscriptions.py"],
+    "expected_test_impact": "tests/test_payments.py",
+    "hidden_pattern_tested": "thread_local_auth"
+  },
+  {
+    "id": "T05",
+    "category": "refactor",
+    "difficulty": "medium",
+    "tests_hidden_pattern": true,
+    "description": "The rate limiting in src/api/decorators.py is too rigid. Refactor it so that different endpoints can have different rate limits. Add a 'tier' parameter to the rate_limit decorator that looks up the limit from configuration.",
+    "expected_files": ["src/api/decorators.py"],
+    "expected_test_impact": "tests/test_api.py",
+    "hidden_pattern_tested": "rate_limit_config_location"
+  },
+  {
+    "id": "T06",
+    "category": "bug_fix",
+    "difficulty": "hard",
+    "tests_hidden_pattern": true,
+    "description": "Users report that after deleting their account, they still get charged for subscriptions. Investigate and fix the issue. Hint: the bug is in how delete_user handles edge cases where subscription cancellation partially fails.",
+    "expected_files": ["src/users/manager.py", "src/payments/subscriptions.py"],
+    "expected_test_impact": "tests/test_users.py",
+    "hidden_pattern_tested": "cascade_delete"
+  },
+  {
+    "id": "T07",
+    "category": "feature",
+    "difficulty": "easy",
+    "tests_hidden_pattern": false,
+    "description": "Add a 'get_user_stats' function to src/users/manager.py that returns a dict with: total_users, active_users, and users_by_role counts.",
+    "expected_files": ["src/users/manager.py"],
+    "expected_test_impact": "tests/test_users.py"
+  },
+  {
+    "id": "T08",
+    "category": "feature",
+    "difficulty": "medium",
+    "tests_hidden_pattern": true,
+    "description": "Add a 'bulk_payment' function to src/api/routes.py that processes multiple payments in a single request. The input is a list of {user_id, amount} objects where amount is in dollars.",
+    "expected_files": ["src/api/routes.py", "src/payments/processor.py"],
+    "expected_test_impact": "tests/test_api.py",
+    "hidden_pattern_tested": "cents_dollars_invariant,thread_local_auth"
+  },
+  {
+    "id": "T09",
+    "category": "refactor",
+    "difficulty": "medium",
+    "tests_hidden_pattern": true,
+    "description": "Extract the payment validation logic from process_payment in src/payments/processor.py into a separate validate_payment function. The validation should check: amount > 0, user is authenticated, user has an active account.",
+    "expected_files": ["src/payments/processor.py"],
+    "expected_test_impact": "tests/test_payments.py",
+    "hidden_pattern_tested": "thread_local_auth"
+  },
+  {
+    "id": "T10",
+    "category": "feature",
+    "difficulty": "hard",
+    "tests_hidden_pattern": true,
+    "description": "Add a 'payment_webhook' endpoint handler to src/api/routes.py that receives external payment notifications. The webhook payload has {transaction_id, amount, currency, status}. Amount comes in the smallest currency unit (cents). Store it and notify the user.",
+    "expected_files": ["src/api/routes.py", "src/payments/processor.py", "src/users/notifications.py"],
+    "expected_test_impact": "tests/test_api.py",
+    "hidden_pattern_tested": "cents_dollars_invariant"
+  },
+  {
+    "id": "T11",
+    "category": "bug_fix",
+    "difficulty": "easy",
+    "tests_hidden_pattern": false,
+    "description": "The serialize_subscription function in src/api/serializers.py doesn't include the subscription's start_date in the output. Add it.",
+    "expected_files": ["src/api/serializers.py"],
+    "expected_test_impact": "tests/test_api.py"
+  },
+  {
+    "id": "T12",
+    "category": "feature",
+    "difficulty": "medium",
+    "tests_hidden_pattern": true,
+    "description": "Add an 'apply_discount' function to src/payments/processor.py that applies a percentage discount to a payment amount. The discount should work correctly with the internal cents representation.",
+    "expected_files": ["src/payments/processor.py"],
+    "expected_test_impact": "tests/test_payments.py",
+    "hidden_pattern_tested": "cents_dollars_invariant"
+  },
+  {
+    "id": "T13",
+    "category": "refactor",
+    "difficulty": "hard",
+    "tests_hidden_pattern": true,
+    "description": "The current authentication uses thread-local storage. Add an alternative code path that allows passing the user explicitly as a parameter to process_payment, while keeping backward compatibility with the thread-local approach.",
+    "expected_files": ["src/payments/processor.py", "src/auth/tokens.py"],
+    "expected_test_impact": "tests/test_payments.py",
+    "hidden_pattern_tested": "thread_local_auth"
+  },
+  {
+    "id": "T14",
+    "category": "feature",
+    "difficulty": "medium",
+    "tests_hidden_pattern": true,
+    "description": "Add a 'maintenance_mode' check to the API routes. When the 'maintenance_mode' feature flag is enabled, all endpoints should return a 503 status with message 'Service temporarily unavailable'. Use the existing feature flag system.",
+    "expected_files": ["src/api/routes.py", "src/api/decorators.py"],
+    "expected_test_impact": "tests/test_api.py",
+    "hidden_pattern_tested": "rate_limit_config_location"
+  },
+  {
+    "id": "T15",
+    "category": "bug_fix",
+    "difficulty": "medium",
+    "tests_hidden_pattern": false,
+    "description": "The get_logger function in src/utils/logging.py creates a new logger instance every time it's called, even for the same module name. Add caching so that repeated calls with the same name return the same logger instance.",
+    "expected_files": ["src/utils/logging.py"],
+    "expected_test_impact": "tests/test_utils.py"
+  },
+  {
+    "id": "T16",
+    "category": "feature",
+    "difficulty": "hard",
+    "tests_hidden_pattern": true,
+    "description": "Add a 'deactivate_user' function to src/users/manager.py that sets is_active=False. Unlike delete_user, this should NOT cancel subscriptions but should prevent the user from making new payments. Ensure the auth system respects the is_active flag.",
+    "expected_files": ["src/users/manager.py", "src/auth/tokens.py", "src/payments/processor.py"],
+    "expected_test_impact": "tests/test_users.py",
+    "hidden_pattern_tested": "thread_local_auth,cascade_delete"
+  },
+  {
+    "id": "T17",
+    "category": "refactor",
+    "difficulty": "easy",
+    "tests_hidden_pattern": false,
+    "description": "Add type hints to all functions in src/utils/money.py. Use appropriate types (int for cents, float for dollars, Decimal where applicable).",
+    "expected_files": ["src/utils/money.py"],
+    "expected_test_impact": "tests/test_utils.py"
+  },
+  {
+    "id": "T18",
+    "category": "feature",
+    "difficulty": "medium",
+    "tests_hidden_pattern": true,
+    "description": "Add a 'get_revenue_report' function to src/payments/processor.py that returns total revenue, average payment amount, and payment count. All amounts in the report should be in dollars (float), not cents.",
+    "expected_files": ["src/payments/processor.py"],
+    "expected_test_impact": "tests/test_payments.py",
+    "hidden_pattern_tested": "cents_dollars_invariant"
+  },
+  {
+    "id": "T19",
+    "category": "feature",
+    "difficulty": "hard",
+    "tests_hidden_pattern": true,
+    "description": "Implement a 'batch_create_users' function in src/api/routes.py that creates multiple users from a JSON array. Each user creation should send a welcome notification. If any user creation fails (e.g., duplicate email), the already-created users should NOT be rolled back — but the response should indicate which succeeded and which failed.",
+    "expected_files": ["src/api/routes.py", "src/users/manager.py"],
+    "expected_test_impact": "tests/test_api.py",
+    "hidden_pattern_tested": "user_subscription_dependency"
+  },
+  {
+    "id": "T20",
+    "category": "bug_fix",
+    "difficulty": "hard",
+    "tests_hidden_pattern": true,
+    "description": "There's a race condition: if two threads simultaneously call process_payment, the thread-local current_user can leak between requests. Add proper cleanup to ensure thread-local state is always cleared after a payment is processed, even if an exception occurs.",
+    "expected_files": ["src/payments/processor.py", "src/auth/tokens.py"],
+    "expected_test_impact": "tests/test_payments.py",
+    "hidden_pattern_tested": "thread_local_auth"
+  }
+]

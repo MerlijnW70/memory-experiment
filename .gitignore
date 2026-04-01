@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+experiment/results/
+*.egg-info/
+.claude/settings.local.json
