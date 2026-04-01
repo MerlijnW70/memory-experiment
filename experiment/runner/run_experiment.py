@@ -71,6 +71,11 @@ def setup_workdir(condition: str, task_id: str, run: int) -> Path:
     if memory_src.exists():
         shutil.copytree(memory_src, claude_dir / "memory", dirs_exist_ok=True)
 
+    # Copy CLAUDE.md if it exists (condition E)
+    claude_md_src = condition_dir / "CLAUDE.md"
+    if claude_md_src.exists():
+        shutil.copy2(claude_md_src, workdir / "CLAUDE.md")
+
     return workdir
 
 

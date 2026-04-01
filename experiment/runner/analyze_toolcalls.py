@@ -9,6 +9,8 @@ conditions = {
     'B': '28dc4ee2-8658-4207-966c-d11a37071d6a',
     'C': '38fbd501-7733-4bd3-8b4a-19dfd96a70b7',
     'D': '7269248c-30aa-47a9-8133-cdd3c890b42d',
+    'E': 'dfeebab0-dec8-4bea-917b-98ad09970a69',
+    'F': 'f76968de-0c68-4acd-aa8d-867025db5219',
 }
 
 for cond, sid in conditions.items():
